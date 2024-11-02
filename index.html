@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salary Monitor App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* CSS Reset & Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #2d3436;
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(45deg, #6c5ce7, #a363d9);
+            color: #fff;
+            text-align: center;
+            padding: 4rem 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='rgba(255,255,255,0.1)' fill-opacity='1' d='M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,213.3C672,192,768,128,864,128C960,128,1056,192,1152,213.3C1248,235,1344,213,1392,202.7L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+            background-size: cover;
+            z-index: 0;
+        }
+
+        header h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+            animation: slideDown 1s ease-out;
+        }
+
+        header p {
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        /* Content Styles */
+        .content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .app-info {
+            text-align: left;
+            padding: 2rem;
+        }
+
+        .features {
+            display: grid;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transform: translateZ(0);
+            will-change: transform;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            color: #6c5ce7;
+            margin-bottom: 1rem;
+        }
+
+        .app-preview {
+            position: relative;
+            text-align: center;
+        }
+
+        .app-preview img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            transition: transform 0.5s ease;
+        }
+
+        .app-preview img:hover {
+            transform: perspective(1000px) rotateY(10deg);
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: #6c5ce7;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(108, 92, 231, 0.3);
+        }
+
+        .download-btn:hover {
+            background: #5b4cc4;
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(108, 92, 231, 0.4);
+        }
+
+        /* Animations */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+
+            .app-info {
+                text-align: center;
+                padding: 1rem;
+            }
+
+            header {
+                padding: 3rem 1rem;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #6c5ce7;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Download button animation */
+        .download-btn.spinning {
+            pointer-events: none;
+        }
+
+        .download-btn.spinning i {
+            animation: downloadSpin 4s linear;
+        }
+
+        @keyframes downloadSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(1440deg); }
+        }
+
+        /* Notification styles */
+        .notification {
+            position: fixed;
+            bottom: -100px;
+            right: 20px;
+            background: #4CAF50;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1000;
+            transform: translate3d(0, 0, 0);
+        }
+
+        .notification.show {
+            bottom: 20px;
+        }
+
+        .notification i {
+            font-size: 1.2rem;
+        }
+
+        .notification p {
+            margin: 0;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <header>
+        <h1><i class="fas fa-chart-line"></i> Salary Monitor</h1>
+        <p>Smart finance tracking for modern professionals</p>
+    </header>
+
+    <div class="content">
+        <div class="app-info">
+            <h2>Transform Your Financial Management</h2>
+            <p>Take control of your finances with our comprehensive salary tracking solution.</p>
+            
+            <div class="features">
+                <div class="feature-card">
+                    <i class="fas fa-chart-pie feature-icon"></i>
+                    <h3>Expense Analytics</h3>
+                    <p>Visualize your spending patterns with interactive charts</p>
+                </div>
+                
+                <div class="feature-card">
+                    <i class="fas fa-bell feature-icon"></i>
+                    <h3>Smart Notifications</h3>
+                    <p>Get alerts for bills, payments, and salary credits</p>
+                </div>
+                
+                <div class="feature-card">
+                    <i class="fas fa-shield-alt feature-icon"></i>
+                    <h3>Secure & Private</h3>
+                    <p>Bank-grade encryption for your financial data</p>
+                </div>
+            </div>
+
+            <a href="#" class="download-btn">
+                <i class="fab fa-android"></i>
+                <span>Download APK</span>
+            </a>
+        </div>
+
+        <div class="app-preview">
+            <img src="images/app (1).png" alt="Salary Monitor App Preview" loading="lazy">
+        </div>
+    </div>
+
+    <div class="notification" id="downloadNotification">
+        <i class="fas fa-check-circle"></i>
+        <p>Download started successfully!</p>
+    </div>
+
+    <script>
+        // DOM ready event ekata move karamu
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize all event listeners here
+        });
+        
+        // Defer non-critical JavaScript
+        const loadNonCritical = () => {
+            // Feature cards animation
+            const observerOptions = {
+                threshold: 0.5,
+                rootMargin: '50px'
+            };
+        };
+        
+        // Add defer attribute to script tag
+        window.addEventListener('load', loadNonCritical);
+
+        // Loading animation
+        window.addEventListener('load', () => {
+            const loader = document.querySelector('.loading');
+            loader.style.opacity = '0';
+            setTimeout(() => {
+                loader.style.display = 'none';
+            }, 500);
+        });
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Feature cards animation on scroll
+        const observerOptions = {
+            threshold: 0.5
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            observer.observe(card);
+        });
+
+        // Download button animation and notification
+        const downloadBtn = document.querySelector('.download-btn');
+        const notification = document.getElementById('downloadNotification');
+
+        downloadBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            // Add spinning class
+            downloadBtn.classList.add('spinning');
+            
+            // After 4 seconds
+            setTimeout(() => {
+                // Remove spinning class
+                downloadBtn.classList.remove('spinning');
+                
+                // Show notification
+                notification.classList.add('show');
+                
+                // Start download
+                window.location.href = 'download/Salary Monitor_1_1.0.apk';
+                
+                // Hide notification after 3 seconds
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }, 4000);
+        });
+    </script>
+</body>
+</html>
